@@ -1,0 +1,3 @@
+Total de arquivos analisados: 5762
+Arquivos com a palavra "MGMC": 5761
+Arquivos vazios ignorados: 0
