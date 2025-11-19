@@ -1,0 +1,122 @@
+[33mcommit b69819258b04b41b7c4ddc37324b6b043e73dbdc[m[33m ([m[1;36mHEAD[m[33m -> [m[1;32mdev[m[33m)[m
+Author: M-Seiti <seitimatheus@gmail.com>
+Date:   Wed Nov 19 10:06:23 2025 -0300
+
+    Primeiro commit do dashboard (sem dados brutos)
+
+ .gitignore | Bin [31m0[m -> [32m96[m bytes
+ 1 file changed, 0 insertions(+), 0 deletions(-)
+
+[33mcommit 5e606b113c84b08a6c6baef69f71e0156a3fc797[m
+Author: M-Seiti <seitimatheus@gmail.com>
+Date:   Wed Nov 19 09:56:40 2025 -0300
+
+    Primeiro commit
+
+ 1_Baixar_DadosWGET_RM.py                           |      82 [32m+[m
+ 2_Descompactar_Arquivos_RM.py                      |      54 [32m+[m
+ 3.1_Calcular_Dados_RM_Manipulacao_arquivo.py       |      58 [32m+[m
+ 3.2_Calcular_Dados_RM.py                           |     148 [32m+[m
+ comandos_instalados.zip                            |     Bin [31m0[m -> [32m2866612[m bytes
+ comandos_instalados/comandos_instalados/wget.exe   |     Bin [31m0[m -> [32m7046072[m bytes
+ .../MGMC/MGMC.2008.trop/MGMC.2008.096.trop         |     345 [32m+[m
+ .../MGMC/MGMC.2008.trop/MGMC.2008.098.trop         |     345 [32m+[m
+ .../MGMC/MGMC.2008.trop/MGMC.2008.161.trop         |     345 [32m+[m
+ .../MGMC/MGMC.2008.trop/MGMC.2008.162.trop         |     345 [32m+[m
+ .../MGMC/MGMC.2008.trop/MGMC.2008.163.trop         |     345 [32m+[m
+ .../MGMC/MGMC.2008.trop/MGMC.2008.164.trop         |     345 [32m+[m
+ .../MGMC/MGMC.2008.trop/MGMC.2008.165.trop         |     345 [32m+[m
+ .../MGMC/MGMC.2008.trop/MGMC.2008.166.trop         |     345 [32m+[m
+ .../MGMC/MGMC.2008.trop/MGMC.2008.167.trop         |     345 [32m+[m
+ .../MGMC/MGMC.2008.trop/MGMC.2008.168.trop         |     345 [32m+[m
+ .../MGMC/MGMC.2008.trop/MGMC.2008.169.trop         |     345 [32m+[m
+ .../MGMC/MGMC.2008.trop/MGMC.2008.170.trop         |     297 [32m+[m
+ .../MGMC/MGMC.2008.trop/MGMC.2008.172.trop         |     137 [32m+[m
+ .../MGMC/MGMC.2008.trop/MGMC.2008.177.trop         |     165 [32m+[m
+ .../MGMC/MGMC.2008.trop/MGMC.2008.178.trop         |     214 [32m+[m
+ .../MGMC/MGMC.2008.trop/MGMC.2008.179.trop         |     345 [32m+[m
+ .../MGMC/MGMC.2008.trop/MGMC.2008.180.trop         |     261 [32m+[m
+ .../MGMC/MGMC.2008.trop/MGMC.2008.182.trop         |     345 [32m+[m
+ .../MGMC/MGMC.2008.trop/MGMC.2008.183.trop         |     286 [32m+[m
+ .../MGMC/MGMC.2008.trop/MGMC.2008.184.trop         |     345 [32m+[m
+ .../MGMC/MGMC.2008.trop/MGMC.2008.185.trop         |     345 [32m+[m
+ .../MGMC/MGMC.2008.trop/MGMC.2008.186.trop         |     345 [32m+[m
+ .../MGMC/MGMC.2008.trop/MGMC.2008.187.trop         |     345 [32m+[m
+ .../MGMC/MGMC.2008.trop/MGMC.2008.188.trop         |     345 [32m+[m
+ .../MGMC/MGMC.2008.trop/MGMC.2008.189.trop         |     345 [32m+[m
+ .../MGMC/MGMC.2008.trop/MGMC.2008.190.trop         |     345 [32m+[m
+ .../MGMC/MGMC.2008.trop/MGMC.2008.191.trop         |     273 [32m+[m
+ .../MGMC/MGMC.2008.trop/MGMC.2008.192.trop         |     345 [32m+[m
+ .../MGMC/MGMC.2008.trop/MGMC.2008.197.trop         |     178 [32m+[m
+ .../MGMC/MGMC.2008.trop/MGMC.2008.198.trop         |     345 [32m+[m
+ .../MGMC/MGMC.2008.trop/MGMC.2008.199.trop         |     345 [32m+[m
+ .../MGMC/MGMC.2008.trop/MGMC.2008.200.trop         |     345 [32m+[m
+ .../MGMC/MGMC.2008.trop/MGMC.2008.201.trop         |     345 [32m+[m
+ .../MGMC/MGMC.2008.trop/MGMC.2008.202.trop         |     345 [32m+[m
+ .../MGMC/MGMC.2008.trop/MGMC.2008.203.trop         |     345 [32m+[m
+ .../MGMC/MGMC.2008.trop/MGMC.2008.204.trop         |     273 [32m+[m
+ .../MGMC/MGMC.2008.trop/MGMC.2008.205.trop         |     345 [32m+[m
+ .../MGMC/MGMC.2008.trop/MGMC.2008.206.trop         |     345 [32m+[m
+ .../MGMC/MGMC.2008.trop/MGMC.2008.207.trop         |     345 [32m+[m
+ .../MGMC/MGMC.2008.trop/MGMC.2008.208.trop         |     345 [32m+[m
+ .../MGMC/MGMC.2008.trop/MGMC.2008.209.trop         |     345 [32m+[m
+ .../MGMC/MGMC.2008.trop/MGMC.2008.210.trop         |     345 [32m+[m
+ .../MGMC/MGMC.2008.trop/MGMC.2008.211.trop         |     345 [32m+[m
+ .../MGMC/MGMC.2008.trop/MGMC.2008.212.trop         |     345 [32m+[m
+ .../MGMC/MGMC.2008.trop/MGMC.2008.213.trop         |     345 [32m+[m
+ .../MGMC/MGMC.2008.trop/MGMC.2008.214.trop         |     345 [32m+[m
+ .../MGMC/MGMC.2008.trop/MGMC.2008.215.trop         |     345 [32m+[m
+ .../MGMC/MGMC.2008.trop/MGMC.2008.216.trop         |     345 [32m+[m
+ .../MGMC/MGMC.2008.trop/MGMC.2008.217.trop         |     345 [32m+[m
+ .../MGMC/MGMC.2008.trop/MGMC.2008.218.trop         |     345 [32m+[m
+ .../MGMC/MGMC.2008.trop/MGMC.2008.219.trop         |     345 [32m+[m
+ .../MGMC/MGMC.2008.trop/MGMC.2008.220.trop         |     345 [32m+[m
+ .../MGMC/MGMC.2008.trop/MGMC.2008.221.trop         |     345 [32m+[m
+ .../MGMC/MGMC.2008.trop/MGMC.2008.222.trop         |     345 [32m+[m
+ .../MGMC/MGMC.2008.trop/MGMC.2008.223.trop         |     345 [32m+[m
+ .../MGMC/MGMC.2008.trop/MGMC.2008.224.trop         |     345 [32m+[m
+ .../MGMC/MGMC.2008.trop/MGMC.2008.225.trop         |     345 [32m+[m
+ .../MGMC/MGMC.2008.trop/MGMC.2008.226.trop         |     345 [32m+[m
+ .../MGMC/MGMC.2008.trop/MGMC.2008.227.trop         |     345 [32m+[m
+ .../MGMC/MGMC.2008.trop/MGMC.2008.228.trop         |     345 [32m+[m
+ .../MGMC/MGMC.2008.trop/MGMC.2008.229.trop         |     345 [32m+[m
+ .../MGMC/MGMC.2008.trop/MGMC.2008.230.trop         |     345 [32m+[m
+ .../MGMC/MGMC.2008.trop/MGMC.2008.231.trop         |     345 [32m+[m
+ .../MGMC/MGMC.2008.trop/MGMC.2008.232.trop         |     345 [32m+[m
+ .../MGMC/MGMC.2008.trop/MGMC.2008.233.trop         |     345 [32m+[m
+ .../MGMC/MGMC.2008.trop/MGMC.2008.234.trop         |     345 [32m+[m
+ .../MGMC/MGMC.2008.trop/MGMC.2008.235.trop         |     345 [32m+[m
+ .../MGMC/MGMC.2008.trop/MGMC.2008.236.trop         |     345 [32m+[m
+ .../MGMC/MGMC.2008.trop/MGMC.2008.237.trop         |     345 [32m+[m
+ .../MGMC/MGMC.2008.trop/MGMC.2008.238.trop         |     345 [32m+[m
+ .../MGMC/MGMC.2008.trop/MGMC.2008.239.trop         |     345 [32m+[m
+ .../MGMC/MGMC.2008.trop/MGMC.2008.240.trop         |     345 [32m+[m
+ .../MGMC/MGMC.2008.trop/MGMC.2008.241.trop         |     345 [32m+[m
+ .../MGMC/MGMC.2008.trop/MGMC.2008.242.trop         |     345 [32m+[m
+ .../MGMC/MGMC.2008.trop/MGMC.2008.243.trop         |     345 [32m+[m
+ .../MGMC/MGMC.2008.trop/MGMC.2008.244.trop         |     345 [32m+[m
+ .../MGMC/MGMC.2008.trop/MGMC.2008.245.trop         |     345 [32m+[m
+ .../MGMC/MGMC.2008.trop/MGMC.2008.246.trop         |     345 [32m+[m
+ .../MGMC/MGMC.2008.trop/MGMC.2008.247.trop         |     345 [32m+[m
+ .../MGMC/MGMC.2008.trop/MGMC.2008.248.trop         |     345 [32m+[m
+ .../MGMC/MGMC.2008.trop/MGMC.2008.249.trop         |     345 [32m+[m
+ .../MGMC/MGMC.2008.trop/MGMC.2008.250.trop         |     345 [32m+[m
+ .../MGMC/MGMC.2008.trop/MGMC.2008.251.trop         |     345 [32m+[m
+ .../MGMC/MGMC.2008.trop/MGMC.2008.252.trop         |     297 [32m+[m
+ .../MGMC/MGMC.2008.trop/MGMC.2008.253.trop         |     345 [32m+[m
+ .../MGMC/MGMC.2008.trop/MGMC.2008.254.trop         |     345 [32m+[m
+ .../MGMC/MGMC.2008.trop/MGMC.2008.255.trop         |     345 [32m+[m
+ .../MGMC/MGMC.2008.trop/MGMC.2008.256.trop         |     345 [32m+[m
+ .../MGMC/MGMC.2008.trop/MGMC.2008.257.trop         |     201 [32m+[m
+ .../MGMC/MGMC.2008.trop/MGMC.2008.258.trop         |     345 [32m+[m
+ .../MGMC/MGMC.2008.trop/MGMC.2008.259.trop         |     345 [32m+[m
+ .../MGMC/MGMC.2008.trop/MGMC.2008.260.trop         |     345 [32m+[m
+ .../MGMC/MGMC.2008.trop/MGMC.2008.261.trop         |     345 [32m+[m
+ .../MGMC/MGMC.2008.trop/MGMC.2008.262.trop         |     345 [32m+[m
+ .../MGMC/MGMC.2008.trop/MGMC.2008.263.trop         |     345 [32m+[m
+ .../MGMC/MGMC.2008.trop/MGMC.2008.264.trop         |     345 [32m+[m
+ .../MGMC/MGMC.2008.trop/MGMC.2008.265.trop         |     345 [32m+[m
+ .../MGMC/MGMC.2008.trop/MGMC.2008.266.trop         |     345 [32m+[m
+ .../MGMC/MGMC.2008.trop/MGMC.2008.267.trop         |     345 [32m+[m
+ .../MGMC/MGMC.2008.trop/MGMC.2008.268.trop         |     345 [32m+[m
+ .../M
