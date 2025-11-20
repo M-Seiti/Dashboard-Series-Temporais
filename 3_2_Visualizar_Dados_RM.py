@@ -5,7 +5,7 @@ import calendar
 
 from CalcularRM import (
     preparar_dados_dashboard,
-    filtrar_por_ano,
+    carregar_anos_disponiveis,
     calc_media_mensal,
 )
 
@@ -14,26 +14,19 @@ st.title("🌧️ Dashboard TRWET – GNSS / TROP")
 st.markdown("Visualização diária e mensal do **TRWET** a partir de arquivos `.trop`.")
 st.markdown("---")
 
-@st.cache_data
-def carregar_dados():
-    return preparar_dados_dashboard()
 
-df = preparar_dados_dashboard()
 
 st.sidebar.title("⚙️ Controles")
-
-
-anos_disponiveis = sorted(df["ano"].unique())
+anos_disponiveis = carregar_anos_disponiveis()
 ano = st.sidebar.selectbox("Selecione o ano", anos_disponiveis)
 
+df = preparar_dados_dashboard(ano)
 
-df_ano = filtrar_por_ano(df, ano)
-df_mensal = calc_media_mensal(df_ano)
+df_mensal = calc_media_mensal(df)
 
-# ----------------- MÉTRICAS -----------------
-qtd_dias_arquivo = len(df_ano)
+qtd_dias_arquivo = len(df)
 
-total_esperado = 365 if calendar.isleap(ano) else 366
+total_esperado = 366 if calendar.isleap(ano) else 365
 
 dias_faltantes = total_esperado - qtd_dias_arquivo
 if dias_faltantes < 0:
@@ -53,7 +46,7 @@ with col7:
 # ----------------- GRÁFICOS -----------------
 with col1:
     st.subheader(f"Média diária do TRWET - {ano}")
-    fig_dia = px.line(df_ano, x="data", y="TRWET_medio")
+    fig_dia = px.line(df, x="data", y="trwet_medio")
     fig_dia.update_traces(
         mode="lines+markers",
         line=dict(width=2),
@@ -70,4 +63,4 @@ with col2:
     st.plotly_chart(fig_mes, use_container_width=True)
 
 st.subheader("Dados filtrados")
-st.dataframe(df_ano)
+st.dataframe(df)
