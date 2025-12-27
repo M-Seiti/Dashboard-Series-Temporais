@@ -33,7 +33,7 @@ def ler_trop(path):
  return pd.DataFrame(linhas_dados, columns = colunas)
 
 
-base = Path(r"C:\Users\seiti\OneDrive\Desktop\IC\dados_baixados_Matheus\MGMC")
+base = Path(r"C:\Users\Player\Desktop\IC\Dashboard-Series-Temporais\dados_baixados_Matheus\MGMC")
 
 dfs = []
 

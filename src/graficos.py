@@ -32,13 +32,25 @@ if opcao == "Todos os anos":
 
     st.write("Dias disponíveis:", qtd_dias_arquivo)
 
-    st.subheader(f"Média diária do TRWET de todos os anos")
-    fig_todos = px.scatter(df_decomp, x="data", y="trwet_medio", trendline = "ols")
-    fig_todos.update_traces(
-    mode="lines+markers",
-    line=dict(width=2),
-    marker=dict(size=4),
+    st.subheader("Média diária do TRWET de todos os anos")
+
+    fig_todos = px.scatter(
+        df_decomp,
+        x="data",
+        y="trwet_medio",
+        trendline="ols",
     )
+
+    fig_todos.update_traces(
+        selector=dict(mode="markers"),
+        marker=dict(size=4, color="rgba(0, 123, 255, 0.6)")
+    )
+
+    fig_todos.update_traces(
+        selector=dict(name="trendline"),
+        line=dict(color="red", width=3)
+    )
+
     st.plotly_chart(fig_todos, use_container_width=True)
     
     st.subheader(f"Tendência do TRWET - Média móvel")

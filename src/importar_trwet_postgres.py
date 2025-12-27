@@ -9,11 +9,11 @@ load_dotenv()
 
 USER = os.getenv("POSTGRES_USER")
 PWD  = os.getenv("POSTGRES_PASSWORD")
-HOST = os.getenv("POSTGRES_HOST", "localhost")
-PORT = os.getenv("POSTGRES_PORT", "5432")
+HOST = os.getenv("POSTGRES_HOST")
+PORT = os.getenv("POSTGRES_PORT")
 DB   = os.getenv("POSTGRES_DB")
 
-csv_file = Path(r"C:\Users\seiti\OneDrive\Desktop\IC\dados_baixados_Matheus\resultado_TROP_todos.csv")
+csv_file = Path(r"C:\Users\Player\Desktop\IC\Dashboard-Series-Temporais\dados_baixados_Matheus\resultado_TROP_todos.csv")
 
 engine = create_engine(
     f"postgresql+psycopg2://{USER}:{PWD}@{HOST}:{PORT}/{DB}"
@@ -85,3 +85,6 @@ def trwe_diario():
     print(f"  → {len(df)} linhas inseridas.")
 
     print("✅ Importação concluída.") 
+
+if __name__ == "__main__":
+    trwe_diario()
