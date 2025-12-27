@@ -4,6 +4,7 @@ import os
 from dotenv import load_dotenv
 from sqlalchemy import create_engine
 import streamlit as st
+from prophet import Prophet
 
 csv_path = (r"C:\Users\seiti\OneDrive\Desktop\IC\dados_baixados_Matheus\resultado_TROP_todos.csv")
 load_dotenv()
@@ -117,20 +118,29 @@ def calc_media_mensal(df):
 
 @st.cache_data(show_spinner=False)
 def decomposicao(df):
-    df = df.copy()
 
-    ts_trwet = df["trwet_medio"]
-    
-    decomp = seasonal_decompose(
-        ts_trwet,
-        model="additive",
-        period=365,
-    )
-    df["tendencia"] = decomp.trend
-    df["sazonalidade"] = decomp.seasonal
-    df["residuo"] = decomp.resid
+    df_prophet = df.copy()
+    df_prophet = df_prophet.rename(columns={
+        "data": "ds",
+        "trwet_medio": "y"
+    })
+
+    m = Prophet(
+    yearly_seasonality=True,
+    weekly_seasonality=False,
+    daily_seasonality=False,
+    changepoint_prior_scale=0.05, 
+    seasonality_prior_scale=10.0,   
+  )
+    m.fit(df_prophet)
+
+    forecast = m.predict(df_prophet[["ds"]])
+    df["tendencia"] = forecast["trend"].values
+    df["sazonalidade"] = forecast["yearly"].values
+    df["residuo"] = df["trwet_medio"] - forecast["yhat"].values
 
     return df
+
 
 def calcular_max_min(df):
 
