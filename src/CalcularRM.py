@@ -90,6 +90,15 @@ def carregar_anos_disponiveis():
     """
     df = pd.read_sql_query(query, engine)
     return df["ano"].tolist()
+    
+def carregar_meses_disponiveis():
+    query = """
+        SELECT DISTINCT EXTRACT(MONTH FROM epoch)::int AS mes
+        FROM trwet_diario
+        ORDER BY mes;
+    """
+    df = pd.read_sql_query(query, engine)
+    return df["mes"].tolist()
 
 def preparar_dados_dashboard(ano: int):
   df = carregar_dados_ano(ano)
@@ -141,6 +150,32 @@ def decomposicao(df):
 
     return df
 
+def media_desvio(df):
+
+    df = df.copy()
+
+    df["mes"] = df["data"].dt.month
+
+    df_media_desvio = (
+    df.assign(mes=df["data"].dt.month)
+      .groupby("mes", as_index=False)["residuo"]
+      .agg(media_residuo="mean", desvio_padrao_residuo="std")
+)
+
+    return df_media_desvio
+
+def calcular_dias_mes(df):
+    df = df.copy()
+
+    df["mes"] = df["data"].dt.month
+    df["dia"] = df["data"].dt.day
+
+    df_dias_meses = (
+        df
+        .groupby("mes")["dia"]
+        .count()
+    )
+    return df_dias_meses
 
 def calcular_max_min(df):
 

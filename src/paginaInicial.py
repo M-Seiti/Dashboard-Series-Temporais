@@ -1,5 +1,8 @@
 import streamlit as st
 
+
+st.image("C:/Users/Player/Desktop/IC/Dashboard-Series-Temporais/src/images/banner.png", use_container_width=True)
+
 st.title("🌍 Análise Temporal de Variáveis Atmosféricas")
 
 st.markdown(
@@ -27,3 +30,5 @@ st.markdown(
 
     """
 )
+
+st.image("C:/Users/Player/Desktop/IC/Dashboard-Series-Temporais/src/images/Bnner2.png", use_container_width=True)

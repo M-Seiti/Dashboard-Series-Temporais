@@ -1,8 +1,8 @@
 import streamlit as st
 
 pages = {
-    "Pagina Inicial": [
-        st.Page("paginaInicial.py", title="Pagina Inicial"),
+    "Sobre": [
+        st.Page("paginaInicial.py", title="Sobre o projeto"),
     ],
     "Visualização de gráficos": [
         st.Page("graficos.py", title="Gráficos"),
