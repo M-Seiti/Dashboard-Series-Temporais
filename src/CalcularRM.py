@@ -187,3 +187,32 @@ def calcular_max_min(df):
         .agg(valor_maximo="max", valor_minimo="min")
     )
     return max_min
+
+def calc_media_mensal_por_ano(df):
+    df = df.copy()
+    df["mes"] = pd.to_datetime(df["data"]).dt.month
+    df["ano"] = pd.to_datetime(df["data"]).dt.year
+
+    df_mensal = (
+        df.groupby(["ano", "mes"])["trwet_medio"]
+          .mean()
+          .reset_index(name="media_mensal")
+    )
+    return df_mensal
+
+
+def calc_climatologia_mensal(df_mensal):
+    df_climatologia = (
+        df_mensal.groupby("mes")["media_mensal"]
+                 .agg(media_climatologica="mean", desvio_padrao="std")
+                 .reset_index()
+    )
+    return df_climatologia
+
+
+def calc_anomalias_mensais(df_mensal, df_climatologia):
+    df = df_mensal.merge(df_climatologia, on="mes", how="left")
+
+    df["anomalia"] = (df["media_mensal"] - df["media_climatologica"]) / df["desvio_padrao"]
+
+    return df.drop(columns=["media_climatologica", "desvio_padrao"])

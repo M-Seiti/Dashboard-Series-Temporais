@@ -10,7 +10,10 @@ from CalcularRM import (
     calc_media_mensal,
     decomposicao,
     calcular_dias_mes,
-    media_desvio
+    media_desvio,
+    calc_media_mensal_por_ano,      
+    calc_climatologia_mensal,        
+    calc_anomalias_mensais           
 )
 
 
@@ -33,6 +36,13 @@ if opcao == "Todos os anos":
     df_decomp = decomposicao(df_merged)
     df_mensal = calc_media_mensal(df_merged)
     qtd_dias_arquivo = len(df_merged)
+    df_mensal_ano = calc_media_mensal_por_ano(df_merged)
+    df_climatologia = calc_climatologia_mensal(df_mensal_ano)
+    df_anomalias = calc_anomalias_mensais(df_mensal_ano, df_climatologia)
+
+    df_anomalias["data_mes"] = pd.to_datetime(
+    {"year": df_anomalias["ano"], "month": df_anomalias["mes"], "day": 1}
+)
 
     st.write("Dias disponíveis:", qtd_dias_arquivo)
 
@@ -94,6 +104,47 @@ if opcao == "Todos os anos":
     st.subheader(f"Soma das medias mensais de todos os anos")
     fig_mes_todos_soma = px.bar(df_mensal, x="data_mes", y="TRWET_media_mensal")
     st.plotly_chart(fig_mes_todos_soma, use_container_width=True)
+
+    st.subheader("Climatologia Mensal (média ± desvio padrão) - ZWD")
+
+    nomes_meses = ["Jan","Fev","Mar","Abr","Mai","Jun","Jul","Ago","Set","Out","Nov","Dez"]
+    df_climatologia["mes_nome"] = df_climatologia["mes"].apply(lambda m: nomes_meses[m-1])
+
+    fig_climatologia = px.bar(
+        df_climatologia,
+        x="mes_nome",
+        y="media_climatologica",
+        error_y="desvio_padrao",
+        labels={"mes_nome": "Mês", "media_climatologica": "Média climatológica"},
+    )
+    st.plotly_chart(fig_climatologia, use_container_width=True)
+
+    st.subheader("Anomalias Mensais Padronizadas - ZWD")
+    fig_anomalias = px.bar(
+        df_anomalias,
+        x="data_mes",
+        y="anomalia",
+        color="anomalia",
+        color_continuous_scale="RdBu",
+        color_continuous_midpoint=0,
+        labels={"data_mes": "Data", "anomalia": "Anomalia (σ)"},
+    )
+    fig_anomalias.add_hline(y=0, line_dash="dash", line_color="black", line_width=1)
+    st.plotly_chart(fig_anomalias, use_container_width=True)
+
+    st.subheader(f"Anomalias por mês selecionado - {meses}")
+    df_anomalias_mes = df_anomalias[df_anomalias["mes"] == meses]
+    fig_anomalias_mes = px.bar(
+        df_anomalias_mes,
+        x="ano",
+        y="anomalia",
+        color="anomalia",
+        color_continuous_scale="RdBu",
+        color_continuous_midpoint=0,
+        labels={"ano": "Ano", "anomalia": "Anomalia (σ)"},
+    )
+    fig_anomalias_mes.add_hline(y=0, line_dash="dash", line_color="black", line_width=1)
+    st.plotly_chart(fig_anomalias_mes, use_container_width=True)
     
 elif opcao == "Lista de anos":
         ano = st.sidebar.selectbox("Selecione o ano:", anos_disponiveis)
