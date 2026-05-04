@@ -246,7 +246,7 @@ This project is developed within the scope of **Undergraduate Research (Iniciaç
 
 ## 👤 Author
 
-**Matheus Seiti**  
+**Matheus Seiti, Rafel Luiz**  
 Academic project – *Undergraduate Research*
 
 ---
