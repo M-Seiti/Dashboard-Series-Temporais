@@ -113,7 +113,7 @@ Este projeto é desenvolvido no contexto de **Iniciação Científica**, com apl
 
 # 👤 Autor
 
-**Matheus Seiti**  
+**Matheus Seiti, Rafael Luiz**  
 Projeto acadêmico – *Iniciação Científica*
 
 ---
