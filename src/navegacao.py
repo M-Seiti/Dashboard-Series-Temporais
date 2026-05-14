@@ -1,14 +1,16 @@
 import streamlit as st
 
 pages = {
-    "Sobre": [
-        st.Page("paginaInicial.py", title="Sobre o projeto"),
+    "Início": [
+        st.Page("paginaInicial.py", title="Página Inicial", icon="🏠"),
     ],
-    "Visualização de gráficos": [
-        st.Page("graficos.py", title="Gráficos"),
+    "Análises": [
+        st.Page("01_series_temporais.py", title="Séries Temporais", icon="📈"),
+        st.Page("02_decomposicao.py",     title="Decomposição",      icon="🧩"),
+        st.Page("03_correlacoes.py",      title="Correlações",       icon="🔗"),
     ],
-    "Visualização de tabelas": [
-        st.Page("tabelas.py", title="Tabelas"),
+    "Dados": [
+        st.Page("04_tabelas.py", title="Tabelas", icon="📋"),
     ],
 }
 
