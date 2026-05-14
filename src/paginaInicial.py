@@ -1,34 +1,27 @@
 import streamlit as st
 
-
-st.image("C:/Users/Player/Desktop/IC/Dashboard-Series-Temporais/src/images/banner.png", use_container_width=True)
-
 st.title("🌍 Análise Temporal de Variáveis Atmosféricas")
 
 st.markdown(
     """
-     ### Sobre
-    Este dashboard apresenta uma análise exploratória e temporal de séries atmosféricas,
-    com foco em padrões de **tendência**, **sazonalidade** e **variabilidade**, 
-    a partir de observações geofísicas.
-    
-    As visualizações permitem investigar o comportamento dos dados ao longo do tempo,
-    identificar mudanças de regime e compreender a ocorrência de eventos extremos.
+    ### Sobre
+    Este dashboard apresenta uma análise exploratória e temporal de séries
+    atmosféricas, com foco em padrões de **tendência**, **sazonalidade** e
+    **variabilidade**, a partir de observações geofísicas (ZWD de estações
+    GNSS) e meteorológicas (precipitação diária).
 
-     ### Navegação
-    
-    Utilize o menu lateral para acessar as diferentes funcionalidades do dashboard:
-    
-    - **Gráficos**: permite a visualização dos dados por meio de gráficos interativos, 
-      facilitando a análise do comportamento temporal, tendências, sazonalidades e variabilidade das séries.
-    
-    - **Tabelas**: disponibiliza os dados organizados em formato tabular, possibilitando a consulta,
-      inspeção detalhada e verificação dos valores utilizados nas análises.
-    
-    Essa separação entre gráficos e tabelas oferece uma abordagem complementar, unindo 
-    visualização exploratória e análise quantitativa dos dados.
+    ### Navegação
 
+    Use o menu lateral para acessar as diferentes análises:
+
+    - **Séries Temporais** — visualização das séries diárias e mensais de
+      ZWD e precipitação, individualmente, por ano ou em todo o período.
+    - **Decomposição** — separação da série de ZWD em componentes de
+      tendência, sazonalidade e resíduo, permitindo identificar padrões e
+      eventos extremos.
+    - **Correlações** — cruzamento entre ZWD e precipitação em escala
+      diária e mensal, incluindo análise de defasagem (lag).
+    - **Tabelas** — dados organizados em formato tabular para inspeção e
+      verificação dos valores utilizados nas análises.
     """
 )
-
-st.image("C:/Users/Player/Desktop/IC/Dashboard-Series-Temporais/src/images/Bnner2.png", use_container_width=True)
