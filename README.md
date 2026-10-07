@@ -167,12 +167,6 @@ Projeto destinado exclusivamente a **uso acadêmico e científico**.
 
 ---
 
-## 🚧 Status do Projeto
-
-Este projeto está **atualmente em desenvolvimento** e **ainda não está finalizado**. Funcionalidades, análises ou componentes visuais podem sofrer alterações em versões futuras.
-
----
-
 # English version
 # Dashboard – Time Series
 
