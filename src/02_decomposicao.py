@@ -3,7 +3,10 @@ import plotly.express as px
 
 from CalcularRM import preparar_dados_dashboard, decomposicao
 
-st.title("🧩 Decomposição da Série — ZWD")
+from estilo import aplicar_estilo, estilo_plotly, ROTULOS
+aplicar_estilo()
+
+st.title("Decomposição da Série — ZWD")
 
 st.markdown(
     "Decomposição aditiva da série diária de ZWD em **tendência**, "
@@ -18,22 +21,22 @@ if df_merged.empty:
 
 df_decomp = decomposicao(df_merged)
 
-st.write("Dias utilizados na decomposição:", len(df_decomp))
+st.columns(3)[0].metric("Dias utilizados na decomposição", len(df_decomp))
 
 # ---------------------------------------------------------------- tendência
 st.subheader("Tendência (média móvel)")
-fig = px.line(df_decomp, x="data", y="tendencia")
-fig.update_traces(mode="lines+markers", line=dict(width=2), marker=dict(size=4))
-st.plotly_chart(fig, use_container_width=True)
+fig = px.line(df_decomp, x="data", y="tendencia", labels=ROTULOS)
+fig.update_traces(mode="lines", line=dict(width=2))
+st.plotly_chart(estilo_plotly(fig), use_container_width=True)
 
 # ---------------------------------------------------------------- sazonalidade
 st.subheader("Sazonalidade (período = 365 dias)")
-fig = px.line(df_decomp, x="data", y="sazonalidade")
-fig.update_traces(mode="lines+markers", line=dict(width=2), marker=dict(size=4))
-st.plotly_chart(fig, use_container_width=True)
+fig = px.line(df_decomp, x="data", y="sazonalidade", labels=ROTULOS)
+fig.update_traces(mode="lines", line=dict(width=1.5))
+st.plotly_chart(estilo_plotly(fig), use_container_width=True)
 
 # ---------------------------------------------------------------- resíduo
 st.subheader("Resíduo")
-fig = px.line(df_decomp, x="data", y="residuo")
-fig.update_traces(mode="lines", line=dict(width=2))
-st.plotly_chart(fig, use_container_width=True)
+fig = px.line(df_decomp, x="data", y="residuo", labels=ROTULOS)
+fig.update_traces(mode="lines", line=dict(width=1))
+st.plotly_chart(estilo_plotly(fig), use_container_width=True)

@@ -1,0 +1,19 @@
+# comandos para instalação, favor não versionar
+comandos_instalados/
+# dados brutos, favor não versionar
+dados_baixados_Matheus/
+*.trop
+*.zip
+*.exe
+.env
+.env.*
+__pycache__/
+*.pyc
+
+# Arquivos enormes, favor não versionar
+resultado_TROP_todos.csv
+media_TRWET_por_arquivo.csv
+media_trwet_por_ano.csv
+
+# Documentação interna de estilo, não versionar
+LEIA-ME_ESTILO.md

@@ -1,41 +1,34 @@
 # PT-BR version
 # Dashboard-Series-Temporais
 
-Dashboard interativo desenvolvido em **Streamlit** para análise de séries temporais de **TRWET** a partir de dados GNSS (`.TROP`).
+Dashboard interativo desenvolvido em **Streamlit** para a análise temporal da relação entre o **Atraso Zenital Úmido (ZWD / TRWET)**, derivado de dados GNSS (`.trop`), e a **precipitação** observada em superfície.
 
-O sistema realiza processamento temporal, agregações estatísticas e visualizações dinâmicas, permitindo investigar **comportamentos médios, tendências e sazonalidades** ao longo dos anos.
+- **Estação GNSS:** MGMC (RBMC) — séries troposféricas do Nevada Geodetic Laboratory (UNR)
+- **Estação meteorológica:** OMM 83437 (INMET)
+- **Local / período:** Montes Claros/MG, 2011–2024
 
 ---
 
 ## 📌 Objetivo do Projeto
 
-Este projeto tem como objetivo:
-
-- Processar grandes volumes de dados GNSS relacionados ao **TRWET**
-- Armazenar os dados em banco **PostgreSQL**
-- Calcular estatísticas temporais (médias diárias, mensais, máximos e mínimos anuais)
-- Visualizar os resultados em um **dashboard interativo**
+- Baixar e processar grandes volumes de arquivos GNSS `.trop`
+- Armazenar ZWD e precipitação diária em banco **PostgreSQL**
+- Calcular estatísticas temporais (médias diárias e mensais, máximos/mínimos anuais, anomalias)
+- Decompor a série de ZWD em tendência, sazonalidade e resíduo
+- Investigar a correlação entre ZWD e precipitação em diferentes escalas
 - Apoiar análises climatológicas e geodésicas baseadas em séries temporais
 
 ---
 
-## 🧠 Funcionalidades
+## 🧠 Páginas do Dashboard
 
-- 📥 Importação de dados GNSS (`.csv`) para PostgreSQL  
-- 🕒 Conversão de tempo GNSS  
-  *(ano + dia juliano + segundos → timestamp)*
-- 📊 Cálculo de:
-  - Média diária do TRWET
-  - Média mensal
-  - Máximos e mínimos por ano
-- 📈 Visualização interativa:
-  - Séries temporais
-  - Tendência (média móvel / regressão)
-  - Gráficos por ano ou para todo o período
-- 🗂️ Navegação entre páginas:
-  - Página inicial
-  - Gráficos
-  - Tabelas
+| Página | Conteúdo |
+|---|---|
+| **Página Inicial** | Contexto do estudo, indicadores (período, estações, local) e atalhos para as análises. |
+| **01 · Séries Temporais** | Séries diárias e mensais de ZWD **ou** precipitação, para um ano específico ou todo o período; anomalias normalizadas (Z-score) mensais e semanais. |
+| **02 · Decomposição** | Decomposição da série diária de ZWD com **Prophet**: tendência, sazonalidade anual e resíduo. |
+| **03 · Correlações** | Dispersão diária e mensal ZWD × precipitação, ajuste de curvas (linear, logarítmica, raiz quadrada, Michaelis-Menten) com R²/RMSE/MAE, séries sobrepostas, correlação cruzada com defasagem (±15 dias) e correlação/matriz de confusão de sinais das anomalias mensais e semanais. |
+| **04 · Tabelas** | Máximos e mínimos anuais, médias diárias de ZWD, precipitação diária e soma mensal. |
 
 ---
 
@@ -44,224 +37,169 @@ Este projeto tem como objetivo:
 ```text
 Dashboard-Series-Temporais/
 │
+├── .streamlit/config.toml                       # Tema (claro) ao rodar a partir da raiz
 ├── src/
-│   ├── navegacao.py               # Controle de navegação entre páginas
-│   ├── pagina_inicial.py          # Página inicial do dashboard
-│   ├── graficos.py                # Visualizações gráficas
-│   ├── tabelas.py                 # Visualização de tabelas
-│   ├── CalcularRM.py              # Funções de processamento e estatísticas
-│   └── importar_trwet_postgres.py # Importação de dados para o PostgreSQL
+│   ├── .streamlit/config.toml                   # Tema (escuro) ao rodar a partir de src/
+│   │
+│   │   # ── Pipeline de dados ──────────────────────────────
+│   ├── 1_Baixar_DadosWGET_RM.py                 # Download dos .zip de séries troposféricas (UNR) via wget
+│   ├── 2_Descompactar_Arquivos_RM.py            # Descompacta .zip / .gz em arquivos .trop
+│   ├── 3_1_Calcular_Dados_RM_Manipulacao_arquivo.py  # Lê o bloco TROP/SOLUTION e gera resultado_TROP_todos.csv
+│   ├── importar_trwet_postgres.py               # Converte o EPOCH e importa para a tabela trwet_diario
+│   ├── importar_precipitacao_postgres.py        # Importa a precipitação (upsert) para precipitacao_diaria
+│   ├── precipitacao_diaria_83437.csv            # Precipitação diária da estação INMET 83437
+│   │
+│   │   # ── Lógica de cálculo ──────────────────────────────
+│   ├── CalcularRM.py                            # Consulta do ZWD, médias, anomalias, decomposição (Prophet)
+│   ├── CalcularPrecipitacao.py                  # Consulta da precipitação, somas mensais, extremos, anomalias
+│   ├── CalcularCorrelacoes.py                   # Merge ZWD × precipitação, correlações, defasagem, ajuste de curvas
+│   │
+│   │   # ── Interface ─────────────────────────────────────
+│   ├── navegacao.py                             # Ponto de entrada: configuração e navegação entre páginas
+│   ├── estilo.py                                # Identidade visual (CSS) e template dos gráficos Plotly
+│   ├── paginaInicial.py
+│   ├── 01_series_temporais.py
+│   ├── 02_decomposicao.py
+│   ├── 03_correlacoes.py
+│   └── 04_tabelas.py
 │
-├── dados_baixados_Matheus/
-│   └── resultado_TROP_todos.csv   # Dados GNSS consolidados
-│
+├── dados_baixados_Matheus/                      # Dados GNSS brutos (não versionar)
 ├── README.md
-└── .env                           # Variáveis de ambiente (não versionado)
+└── .env                                         # Credenciais do banco (não versionado)
 ```
----
-# 🗄️ Banco de Dados
 
-O projeto utiliza **PostgreSQL**, com a tabela principal:
+---
+
+## ⚙️ Como Executar
+
+### 1. Dependências
+
+Python 3.12 e um servidor PostgreSQL acessível.
+
+```bash
+pip install streamlit pandas numpy scipy plotly prophet sqlalchemy psycopg2-binary python-dotenv
+```
+
+### 2. Variáveis de ambiente
+
+Crie um arquivo `.env` na pasta de onde os scripts serão executados:
+
+```env
+POSTGRES_USER=usuario
+POSTGRES_PASSWORD=senha
+POSTGRES_HOST=localhost
+POSTGRES_PORT=5432
+POSTGRES_DB=nome_do_banco
+```
+
+> ⚠️ O `.env` está no `.gitignore` e **nunca** deve ser versionado.
+
+### 3. Preparação dos dados (executar uma vez)
+
+Os scripts de pipeline contêm caminhos absolutos no topo do arquivo (`local_wget`, `base`, `csv_file`) — ajuste-os para a sua máquina antes de rodar.
+
+```bash
+python src/1_Baixar_DadosWGET_RM.py                    # baixa os .zip da estação MGMC
+python src/2_Descompactar_Arquivos_RM.py               # extrai os arquivos .trop
+python src/3_1_Calcular_Dados_RM_Manipulacao_arquivo.py  # consolida em resultado_TROP_todos.csv
+python src/importar_trwet_postgres.py                  # popula trwet_diario
+python src/importar_precipitacao_postgres.py           # popula precipitacao_diaria
+```
+
+### 4. Dashboard
+
+```bash
+cd src
+streamlit run navegacao.py
+```
+
+---
+
+## 🗄️ Banco de Dados
 
 ### 📌 `trwet_diario`
 
-**Campos principais:**
-- `epoch` *(timestamp)*
-- `trwet`
-- `arquivo`
-- Variáveis GNSS auxiliares *(TROTOT, WVAPOR, etc.)*
+- `epoch` *(timestamp — convertido de `AA:DDD:SSSSS`, ano + dia juliano + segundos)*
+- `TRWET` (ZWD), `TROTOT`, `WVAPOR`, `MTEMP`, gradientes `TGETOT`/`TGNTOT` e respectivos desvios
+- `arquivo`, `pasta_ano` *(origem do registro)*
 
-A conexão com o banco de dados é realizada via **SQLAlchemy**, utilizando **variáveis de ambiente** para garantir segurança e portabilidade.
+### 📌 `precipitacao_diaria`
 
----
+- `data` *(DATE)*, `codigo_estacao` *(TEXT)* — chave primária composta
+- `precipitacao_mm`, `dado_faltante`
 
-# 📊 Exemplos de Análises
-
-O dashboard permite realizar diferentes tipos de análises temporais e estatísticas, incluindo:
-
-- 📈 Evolução temporal do **TRWET médio**
-- 📆 Comparação entre **anos**
-- 📉 Identificação de **tendências de longo prazo**
-- 🔁 Avaliação da **sazonalidade anual**
-- ⚠️ Análise de **extremos**  
-  *(máximo e mínimo anual)*
+A importação usa uma tabela temporária + `ON CONFLICT DO UPDATE`, então pode ser reexecutada sem duplicar registros. A conexão é feita via **SQLAlchemy** (`postgresql+psycopg2`) com as credenciais do `.env`; as consultas do dashboard usam `st.cache_data`.
 
 ---
 
-# 🧪 Tecnologias Utilizadas
+## 🧪 Tecnologias Utilizadas
 
 - **Python 3.12**
 - **Streamlit**
-- **Pandas**
+- **Pandas** / **NumPy** / **SciPy**
 - **Plotly**
-- **PostgreSQL**
-- **SQLAlchemy**
-- **Statsmodels**
+- **Prophet**
+- **PostgreSQL** + **SQLAlchemy**
 
 ---
 
-# 📚 Contexto Acadêmico
+## 📚 Contexto Acadêmico
 
 Este projeto é desenvolvido no contexto de **Iniciação Científica**, com aplicações diretas nas áreas de:
 
-- 🌍 Geodésia  
-- 🌦️ Climatologia  
-- ⏱️ Séries temporais ambientais  
+- 🌍 Geodésia
+- 🌦️ Climatologia
+- ⏱️ Séries temporais ambientais
 - 📡 Análise de dados **GNSS**
 
 ---
 
-# 👤 Autor
+## 👤 Autores
 
-**Matheus Seiti, Rafael Luiz**  
+**Matheus Seiti, Rafael Luiz**
 Projeto acadêmico – *Iniciação Científica*
 
 ---
 
-# 📄 Licença
+## 📄 Licença
 
 Projeto destinado exclusivamente a **uso acadêmico e científico**.
+
+---
+
 ## 🚧 Status do Projeto
 
-Este projeto está **atualmente em desenvolvimento** e **ainda não está finalizado**.
-
-Novas funcionalidades, melhorias e refinamentos estão sendo continuamente implementados como parte das atividades em andamento da **Iniciação Científica**.  
-Dessa forma, algumas funcionalidades, análises ou componentes visuais podem sofrer alterações em versões futuras.
+Este projeto está **atualmente em desenvolvimento** e **ainda não está finalizado**. Funcionalidades, análises ou componentes visuais podem sofrer alterações em versões futuras.
 
 ---
 
 # English version
 # Dashboard – Time Series
 
-Interactive dashboard developed in **Streamlit** for the analysis of **TRWET** time series derived from GNSS (`.TROP`) data.
+Interactive **Streamlit** dashboard for analyzing the relationship between the GNSS-derived **Zenith Wet Delay (ZWD / TRWET)** and surface **precipitation** — GNSS station MGMC (RBMC) and INMET weather station WMO 83437, Montes Claros/MG, Brazil, 2011–2024.
 
-The system performs temporal processing, statistical aggregations, and dynamic visualizations, allowing the investigation of **mean behavior, trends, and seasonal patterns** over the years.
+## Pages
 
----
+| Page | Content |
+|---|---|
+| **Home** | Study context, key indicators and shortcuts. |
+| **01 · Time Series** | Daily and monthly ZWD or precipitation series, per year or full period; monthly and weekly normalized anomalies (Z-score). |
+| **02 · Decomposition** | Prophet decomposition of daily ZWD into trend, yearly seasonality and residual. |
+| **03 · Correlations** | Daily/monthly scatter plots, curve fitting (linear, log, square root, Michaelis-Menten) with R²/RMSE/MAE, lagged cross-correlation (±15 days), and anomaly correlation with sign confusion matrices. |
+| **04 · Tables** | Annual extremes, daily ZWD means, daily and monthly precipitation. |
 
-## 📌 Project Objective
+## Quick start
 
-This project aims to:
-
-- Process large volumes of GNSS data related to **TRWET**
-- Store the data in a **PostgreSQL** database
-- Compute temporal statistics (daily and monthly means, annual maxima and minima)
-- Visualize results through an **interactive dashboard**
-- Support climatological and geodetic analyses based on time series
-
----
-
-## 🧠 Features
-
-- 📥 Import of GNSS data (`.csv`) into PostgreSQL  
-- 🕒 GNSS time conversion  
-  *(year + Julian day + seconds → timestamp)*
-- 📊 Computation of:
-  - Daily TRWET mean
-  - Monthly mean
-  - Annual maximum and minimum values
-- 📈 Interactive visualization:
-  - Time series plots
-  - Trend analysis (moving average / regression)
-  - Graphs by year or for the full period
-- 🗂️ Page navigation:
-  - Home page
-  - Charts
-  - Tables
-
----
-
-## 🏗️ Project Structure
-
-```text
-Dashboard-Series-Temporais/
-│
-├── src/
-│   ├── navegacao.py               # Page navigation control
-│   ├── pagina_inicial.py          # Dashboard home page
-│   ├── graficos.py                # Graphical visualizations
-│   ├── tabelas.py                 # Table visualizations
-│   ├── CalcularRM.py              # Processing and statistical functions
-│   └── importar_trwet_postgres.py # Data import into PostgreSQL
-│
-├── dados_baixados_Matheus/
-│   └── resultado_TROP_todos.csv   # Consolidated GNSS data
-│
-├── README.md
-└── .env                           # Environment variables (not versioned)
+```bash
+pip install streamlit pandas numpy scipy plotly prophet sqlalchemy psycopg2-binary python-dotenv
+# create .env with POSTGRES_USER, POSTGRES_PASSWORD, POSTGRES_HOST, POSTGRES_PORT, POSTGRES_DB
+# run the data pipeline (src/1_*, 2_*, 3_1_*, importar_*.py) once — adjust the absolute paths first
+cd src
+streamlit run navegacao.py
 ```
----
 
-## 🗄️ Database
+Data is stored in PostgreSQL tables `trwet_diario` (GNSS troposphere solutions) and `precipitacao_diaria` (daily rainfall, upserted on `data` + `codigo_estacao`).
 
-The project uses **PostgreSQL**, with the main table:
+## Authors
 
-### 📌 `trwet_diario`
-
-**Main fields:**
-- `epoch` *(timestamp)*
-- `trwet`
-- `arquivo`
-- Auxiliary GNSS variables *(TROTOT, WVAPOR, etc.)*
-
-The database connection is handled via **SQLAlchemy**, using **environment variables** to ensure security and portability.
-
----
-
-## 📊 Analysis Examples
-
-The dashboard enables several temporal and statistical analyses, including:
-
-- 📈 Temporal evolution of the **mean TRWET**
-- 📆 Comparison between **years**
-- 📉 Identification of **long-term trends**
-- 🔁 Assessment of **annual seasonality**
-- ⚠️ **Extreme value analysis**  
-  *(annual maximum and minimum)*
-
----
-
-## 🧪 Technologies Used
-
-- **Python 3.12**
-- **Streamlit**
-- **Pandas**
-- **Plotly**
-- **PostgreSQL**
-- **SQLAlchemy**
-- **Statsmodels**
-
----
-
-## 📚 Academic Context
-
-This project is developed within the scope of **Undergraduate Research (Iniciação Científica)**, with applications in:
-
-- 🌍 Geodesy  
-- 🌦️ Climatology  
-- ⏱️ Environmental time series  
-- 📡 **GNSS** data analysis
-
----
-
-## 👤 Author
-
-**Matheus Seiti, Rafel Luiz**  
-Academic project – *Undergraduate Research*
-
----
-
-## 📄 License
-
-Project intended exclusively for **academic and scientific use**.
-
----
-
-## 🚧 Project Status
-
-This project is **currently under development** and is **not yet finalized**.
-
-New features, improvements, and refinements are continuously being implemented as part of the ongoing **Undergraduate Research (Iniciação Científica)** activities.  
-Therefore, some functionalities, analyses, or visual components may change in future versions.
-
----
+**Matheus Seiti, Rafael Luiz** — Undergraduate Research (*Iniciação Científica*). For academic and scientific use only. Work in progress.

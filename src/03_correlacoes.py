@@ -18,12 +18,20 @@ from CalcularCorrelacoes import (
     ajustar_curvas,
 )
 
+# Curvas ajustadas: tons de azul/branco, diferenciados também pelo traço
 _CORES_MODELOS = {
-    "Linear":           "#EF553B",
-    "Logarítmica":      "#00CC96",
-    "Raiz quadrada":    "#AB63FA",
-    "Michaelis-Menten": "#FFA15A",
+    "Linear":           "#FFFFFF",
+    "Logarítmica":      "#4589FF",
+    "Raiz quadrada":    "#A6C8FF",
+    "Michaelis-Menten": "#0F62FE",
 }
+_TRACOS_MODELOS = {
+    "Linear":           "solid",
+    "Logarítmica":      "dash",
+    "Raiz quadrada":    "dot",
+    "Michaelis-Menten": "dashdot",
+}
+_COR_PONTOS = "#6F8FD6"
 
 
 def _secao_ajuste(x, y, label_x, label_y, escala):
@@ -38,20 +46,21 @@ def _secao_ajuste(x, y, label_x, label_y, escala):
     fig = go.Figure()
     fig.add_trace(go.Scatter(
         x=x, y=y, mode="markers", name="Dados observados",
-        marker=dict(size=5, opacity=0.45, color="#636EFA"),
+        marker=dict(size=5, opacity=0.4, color=_COR_PONTOS),
     ))
     for nome, fn in curvas:
         fig.add_trace(go.Scatter(
             x=x_range, y=fn(x_range), mode="lines", name=nome,
-            line=dict(width=2.5, color=_CORES_MODELOS.get(nome, "gray")),
+            line=dict(width=2.5, color=_CORES_MODELOS.get(nome, "#A6C8FF"),
+                      dash=_TRACOS_MODELOS.get(nome, "solid")),
         ))
     fig.update_layout(
         xaxis_title=label_x,
         yaxis_title=label_y,
-        legend=dict(orientation="h", yanchor="bottom", y=1.02, xanchor="right", x=1),
+        legend=dict(orientation="h", yanchor="bottom", y=1.02, xanchor="left", x=0),
         margin=dict(t=60),
     )
-    st.plotly_chart(fig, use_container_width=True)
+    st.plotly_chart(estilo_plotly(fig), use_container_width=True)
 
     # Tabela de qualidade de ajuste
     st.caption(f"Indicadores de qualidade do ajuste — escala {escala}")
@@ -65,7 +74,7 @@ def _secao_ajuste(x, y, label_x, label_y, escala):
     df_show["MAE"]  = df_show["MAE"].map("{:.3f}".format)
 
     def _highlight(row):
-        return ["font-weight: bold; background-color: #d4edda" if row.name == idx_best else "" for _ in row]
+        return ["font-weight: 600; background-color: #0F62FE; color: #FFFFFF" if row.name == idx_best else "" for _ in row]
 
     st.dataframe(
         df_show.style.apply(_highlight, axis=1),
@@ -73,10 +82,13 @@ def _secao_ajuste(x, y, label_x, label_y, escala):
         use_container_width=True,
     )
 
-st.title("🔗 Correlações — ZWD × Precipitação")
+from estilo import aplicar_estilo, estilo_plotly, estilo_matriz, renomear_series, ROTULOS, CORES, ESCALA_MATRIZ
+aplicar_estilo()
+
+st.title("Correlações — ZWD × Precipitação")
 
 # -------------------------------------------------------------------- sidebar
-st.sidebar.title("⚙️ Controles")
+st.sidebar.title("Controles")
 
 metodo = st.sidebar.selectbox(
     "**Método de correlação**",
@@ -142,9 +154,11 @@ fig = px.line(
     df_mensal,
     x="data_mes",
     y=["zwd_medio_mensal", "precipitacao_mensal"],
+    labels=ROTULOS,
 )
-fig.update_traces(mode="lines+markers", line=dict(width=2), marker=dict(size=4))
-st.plotly_chart(fig, use_container_width=True)
+fig.update_traces(mode="lines+markers", line=dict(width=1.6), marker=dict(size=3))
+renomear_series(fig)
+st.plotly_chart(estilo_plotly(fig), use_container_width=True)
 
 # -------------------------------------------------------------------- lag
 st.subheader("Correlação cruzada com defasagem")
@@ -159,9 +173,9 @@ df_lag = correlacao_com_defasagem(
     lags=range(-lag_max, lag_max + 1),
     metodo=metodo,
 )
-fig = px.bar(df_lag, x="lag_dias", y="correlacao")
+fig = px.bar(df_lag, x="lag_dias", y="correlacao", color_discrete_sequence=[CORES["barra"]])
 fig.update_layout(xaxis_title="Defasagem (dias)", yaxis_title=f"Correlação ({metodo})")
-st.plotly_chart(fig, use_container_width=True)
+st.plotly_chart(estilo_plotly(fig), use_container_width=True)
 
 idx_max = df_lag["correlacao"].abs().idxmax()
 lag_pico  = int(df_lag.loc[idx_max, "lag_dias"])
@@ -170,7 +184,7 @@ st.info(f"Pico de correlação em **lag = {lag_pico} dias** → corr = **{corr_p
 
 # -------------------------------------------------------------------- anomalias mensais
 st.divider()
-st.header("📉 Correlações das Anomalias Mensais")
+st.header("Correlações das Anomalias Mensais")
 st.markdown(
     "Correlação entre as **anomalias mensais** de ZWD e de precipitação — "
     "ou seja, os desvios em relação à climatologia de cada mês."
@@ -202,10 +216,11 @@ else:
         x="zscore_prec",
         y="zscore_zwd",
         trendline="ols",
+        trendline_color_override=CORES["tendencia"],
         opacity=0.6,
         labels={"zscore_prec": "Z-score Precipitação", "zscore_zwd": "Z-score ZWD"},
     )
-    st.plotly_chart(fig, use_container_width=True)
+    st.plotly_chart(estilo_plotly(fig), use_container_width=True)
 
     st.subheader("Séries temporais dos Z-scores mensais")
     fig = px.line(
@@ -214,10 +229,10 @@ else:
         y=["zscore_zwd", "zscore_prec"],
         labels={"value": "Z-score", "variable": "Variável", "data_mes": "Mês"},
     )
-    fig.update_traces(mode="lines+markers", line=dict(width=2), marker=dict(size=4))
+    fig.update_traces(mode="lines+markers", line=dict(width=1.6), marker=dict(size=3))
     newnames = {"zscore_zwd": "Z-score ZWD", "zscore_prec": "Z-score Precipitação"}
-    fig.for_each_trace(lambda t: t.update(name=newnames.get(t.name, t.name)))
-    st.plotly_chart(fig, use_container_width=True)
+    renomear_series(fig, newnames)
+    st.plotly_chart(estilo_plotly(fig), use_container_width=True)
 
     # ---- matriz de confusão mensal
     st.subheader("Matriz de confusão de sinais — Z-scores mensais")
@@ -246,7 +261,7 @@ else:
         x=x_labels,
         y=y_labels,
         annotation_text=annot,
-        colorscale="Blues",
+        colorscale=ESCALA_MATRIZ,
         showscale=True,
     )
     fig_conf.update_layout(
@@ -254,12 +269,12 @@ else:
         yaxis_title="Z-score ZWD",
         xaxis=dict(side="bottom"),
     )
-    st.plotly_chart(fig_conf, use_container_width=True)
+    st.plotly_chart(estilo_matriz(fig_conf), use_container_width=True)
 
 
 # -------------------------------------------------------------------- anomalias semanais
 st.divider()
-st.header("📅 Correlações das Anomalias Semanais")
+st.header("Correlações das Anomalias Semanais")
 st.markdown(
     "Mesma análise das anomalias, mas agregada por **semana ISO** "
     "(semana que começa na segunda-feira)."
@@ -285,10 +300,11 @@ else:
         x="zscore_prec",
         y="zscore_zwd",
         trendline="ols",
+        trendline_color_override=CORES["tendencia"],
         opacity=0.6,
         labels={"zscore_prec": "Z-score Precipitação (semanal)", "zscore_zwd": "Z-score ZWD (semanal)"},
     )
-    st.plotly_chart(fig, use_container_width=True)
+    st.plotly_chart(estilo_plotly(fig), use_container_width=True)
 
     st.subheader("Séries temporais dos Z-scores semanais")
     fig = px.line(
@@ -297,10 +313,10 @@ else:
         y=["zscore_zwd", "zscore_prec"],
         labels={"value": "Z-score", "variable": "Variável", "data_semana": "Semana"},
     )
-    fig.update_traces(mode="lines+markers", line=dict(width=1.5), marker=dict(size=3))
+    fig.update_traces(mode="lines", line=dict(width=1.2))
     newnames = {"zscore_zwd": "Z-score ZWD", "zscore_prec": "Z-score Precipitação"}
-    fig.for_each_trace(lambda t: t.update(name=newnames.get(t.name, t.name)))
-    st.plotly_chart(fig, use_container_width=True)
+    renomear_series(fig, newnames)
+    st.plotly_chart(estilo_plotly(fig), use_container_width=True)
 
     # ---- matriz de confusão semanal
     st.subheader("Matriz de confusão de sinais — Z-scores semanais")
@@ -329,7 +345,7 @@ else:
         x=x_labels,
         y=y_labels,
         annotation_text=annot,
-        colorscale="Blues",
+        colorscale=ESCALA_MATRIZ,
         showscale=True,
     )
     fig_conf.update_layout(
@@ -337,4 +353,4 @@ else:
         yaxis_title="Z-score ZWD",
         xaxis=dict(side="bottom"),
     )
-    st.plotly_chart(fig_conf, use_container_width=True)
+    st.plotly_chart(estilo_matriz(fig_conf), use_container_width=True)

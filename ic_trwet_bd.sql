@@ -1,1 +1,0 @@
-SELECT arquivo FROM trwet_diario LIMIT 10;

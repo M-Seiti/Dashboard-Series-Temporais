@@ -1,0 +1,25 @@
+[theme]
+base = "dark"
+primaryColor = "#0F62FE"
+backgroundColor = "#040F2E"
+secondaryBackgroundColor = "#0A1F52"
+textColor = "#C9D9F7"
+linkColor = "#78A9FF"
+borderColor = "#1A3470"
+showWidgetBorder = true
+baseRadius = "2px"
+buttonRadius = "0px"
+font = "IBM Plex Sans:https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@300;400;500;600&display=swap"
+headingFontWeights = [300, 300, 400, 600, 600, 600]
+dataframeBorderColor = "#1A3470"
+dataframeHeaderBackgroundColor = "#0A1F52"
+blueColor = "#4589FF"
+blueBackgroundColor = "#0B2A73"
+blueTextColor = "#D0E2FF"
+chartCategoricalColors = ["#4589FF", "#D0E2FF", "#0F62FE", "#A6C8FF", "#78A9FF", "#FFFFFF"]
+
+[theme.sidebar]
+backgroundColor = "#0A1F52"
+secondaryBackgroundColor = "#061640"
+textColor = "#C9D9F7"
+borderColor = "#23428A"

@@ -7,7 +7,10 @@ from CalcularPrecipitacao import (
     calc_precip_mensal,
 )
 
-st.title("📋 Tabelas")
+from estilo import aplicar_estilo
+aplicar_estilo()
+
+st.title("Tabelas")
 
 aba_zwd, aba_precip = st.tabs(["ZWD", "Precipitação"])
 
